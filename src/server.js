@@ -15,7 +15,8 @@ export const setupServer = () => {
   // Вбудований у express middleware для обробки (парсингу) JSON-даних у запитах
   // наприклад, у запитах POST або PATCH
   app.use(express.json());
-  // Middleware CORS
+
+  // Middleware CORS що дозволяє робити кросбраузерні запити
   app.use(cors());
 
   // Middleware для логування, такий як pino-http, слід розташовувати якомога раніше у ланцюгу middleware
@@ -32,7 +33,7 @@ export const setupServer = () => {
     const contacts = await getAllContacts();
 
     res.status(200).json({
-      status: 'success',
+      status: 200,
       message: 'Successfully found contacts!',
       data: contacts,
     });
@@ -50,13 +51,14 @@ export const setupServer = () => {
     }
 
     res.status(200).json({
-      status: 'success',
+      status: 200,
       message: `Successfully found contact with id ${contactId}!`,
       data: contact,
     });
   });
 
   // Middleware для обробки випадку, коли клієнт звертається до неіснуючого маршруту
+  // додається завжди в кінці, після всіх інших middleware та маршрутів
   app.use('*', (req, res, next) => {
     res.status(404).json({
       message: 'Not found',
