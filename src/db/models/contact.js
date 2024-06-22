@@ -26,7 +26,8 @@ const contactsSchema = new Schema(
     },
   },
   {
-    timestamps: true,
+    versionKey: false, // Виключення додавання версії оновлення об'єкту
+    timestamps: true, // Вказування дати додавання та дати оновлення об'єкту
   },
 );
 
