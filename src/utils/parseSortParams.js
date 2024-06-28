@@ -5,7 +5,7 @@ export const parseSortParams = ({ sortOrder, sortBy }, fieldList) => {
   const parsedSortOrder = sortOrderList.includes(sortOrder)
     ? sortOrder
     : sortOrderList[0];
-  // Перевірка чи вказаний при запиті параметр за яким потрібно сортувати відповідає одному з заданих
+  // Перевірка чи вказана при запиті властивість за якою потрібно сортувати відповідає одній з заданих
   const parsedSortBy = fieldList.includes(sortBy) ? sortBy : fieldList[0];
 
   return {
