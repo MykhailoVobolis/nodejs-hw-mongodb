@@ -4,6 +4,7 @@ import { ContactsCollection } from '../db/models/contact.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 
 export const getAllContacts = async ({
+  filter,
   page,
   perPage,
   sortBy = contactFieldList[0],
@@ -12,15 +13,24 @@ export const getAllContacts = async ({
   const skip = (page - 1) * perPage;
 
   const contactsQuery = ContactsCollection.find();
-  const totalItems = await ContactsCollection.find()
-    .merge(contactsQuery)
-    .countDocuments();
+  if (filter.contactType) {
+    contactsQuery.where('contactType').equals(filter.contactType);
+  }
+  if (filter.isFavourite) {
+    contactsQuery.where('isFavourite').equals(filter.isFavourite);
+  }
 
-  const contacts = await contactsQuery
-    .skip(skip)
-    .limit(perPage)
-    .sort({ [sortBy]: sortORder })
-    .exec();
+  // Покращння швидкодії додатка за допомогою Promise.all():
+
+  const [totalItems, contacts] = await Promise.all([
+    ContactsCollection.find().merge(contactsQuery).countDocuments(),
+
+    contactsQuery
+      .skip(skip)
+      .limit(perPage)
+      .sort({ [sortBy]: sortORder })
+      .exec(),
+  ]);
 
   const paginationData = calculatePaginationData(totalItems, perPage, page);
 
