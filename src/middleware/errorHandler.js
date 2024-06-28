@@ -11,9 +11,10 @@ export const errorHandler = (err, req, res, next) => {
     return;
   }
 
+  const { status = 500, message = 'Something went wrong' } = err;
   res.status(500).json({
-    status: 500,
-    message: 'Something went wrong',
+    status,
+    message,
     data: err.message,
   });
 };
