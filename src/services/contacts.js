@@ -8,7 +8,7 @@ export const getAllContacts = async ({
   page,
   perPage,
   sortBy = contactFieldList[0],
-  sortORder = sortOrderList[0],
+  sortOrder = sortOrderList[0],
 }) => {
   const skip = (page - 1) * perPage;
 
@@ -28,7 +28,7 @@ export const getAllContacts = async ({
     contactsQuery
       .skip(skip)
       .limit(perPage)
-      .sort({ [sortBy]: sortORder })
+      .sort({ [sortBy]: sortOrder })
       .exec(),
   ]);
 

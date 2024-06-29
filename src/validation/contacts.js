@@ -18,8 +18,7 @@ export const createContactSchema = Joi.object({
   contactType: Joi.string()
     .min(3)
     .max(20)
-    .valid(...typeList)
-    .required(),
+    .valid(...typeList),
 });
 
 export const updateContactSchema = Joi.object({
