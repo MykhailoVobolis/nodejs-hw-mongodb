@@ -13,7 +13,7 @@ const parseBoolean = (value) => {
   return parsedValue;
 };
 
-export const parsContactFilterParams = ({ contactType, isFavourite }) => {
+export const parseContactFilterParams = ({ contactType, isFavourite }) => {
   const parsedType = typeList.includes(contactType) ? contactType : null;
   const parsedIsFavourite = parseBoolean(isFavourite);
 
