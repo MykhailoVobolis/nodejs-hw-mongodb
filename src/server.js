@@ -2,7 +2,7 @@ import express from 'express';
 import pino from 'pino-http';
 import cors from 'cors';
 
-import contactsRouter from './routers/contacts.js';
+import router from './routers/index.js';
 
 import { env } from './utils/env.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
@@ -31,7 +31,7 @@ export const setupServer = () => {
     }),
   );
 
-  app.use(contactsRouter);
+  app.use(router);
 
   // Middleware для обробки випадку, коли клієнт звертається до неіснуючого маршруту
   // додається завжди в кінці, після всіх інших middleware та маршрутів
