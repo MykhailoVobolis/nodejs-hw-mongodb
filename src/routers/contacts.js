@@ -11,6 +11,7 @@ import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 
 import { validateBody } from '../middleware/validateBody.js';
 import { isValidId } from '../middleware/isValidId.js';
+import { authenticate } from '../middleware/authenticate.js';
 
 import {
   createContactSchema,
@@ -18,6 +19,8 @@ import {
 } from '../validation/contacts.js';
 
 const router = Router();
+
+router.use(authenticate);
 
 // Отримання колекції всіх контактів
 router.get('/', ctrlWrapper(getContactsController));

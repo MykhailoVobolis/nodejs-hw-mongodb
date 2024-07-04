@@ -1,4 +1,13 @@
-import { registerUser } from '../services/auth.js';
+import {
+  logoutUser,
+  loginUser,
+  registerUser,
+  refreshUsersSession,
+} from '../services/auth.js';
+import {
+  ACCESS_TOKEN_LIFETIME,
+  REFRESH_TOKEN_LIFETIME,
+} from '../constants/index.js';
 
 // Контролер реєстрації користувача
 export const registerUserController = async (req, res) => {
@@ -13,5 +22,70 @@ export const registerUserController = async (req, res) => {
     status: 201,
     message: 'Successfully registered a user!',
     data,
+  });
+};
+
+// Контроллер login користувача
+export const loginUserController = async (req, res) => {
+  const session = await loginUser(req.body);
+
+  // Встановлюємо два куки: refreshToken і sessionId, використовуючи метод res.cookie.
+  res.cookie('refreshToken', session.refreshToken, {
+    httpOnly: true,
+    expires: new Date(Date.now() + ACCESS_TOKEN_LIFETIME),
+  });
+  res.cookie('sessionId', session._id, {
+    httpOnly: true,
+    expires: new Date(Date.now() + ACCESS_TOKEN_LIFETIME),
+  });
+
+  res.json({
+    status: 200,
+    message: 'Successfully logged in an user!',
+    data: {
+      accessToken: session.accessToken,
+    },
+  });
+};
+
+// Контроллер logout користувача
+export const logoutUserController = async (req, res) => {
+  if (req.cookies.sessionId) {
+    await logoutUser(req.cookies.sessionId);
+  }
+
+  // Очищення куків sessionId і refreshToken, використовуючи метод res.clearCookie.
+  res.clearCookie('sessionId');
+  res.clearCookie('refreshToken');
+
+  res.status(204).send();
+};
+
+// Контроллер refresh користувача
+const setupSession = (res, session) => {
+  res.cookie('refreshToken', session.refreshToken, {
+    httpOnly: true,
+    expires: new Date(Date.now() + REFRESH_TOKEN_LIFETIME),
+  });
+  res.cookie('sessionId', session._id, {
+    httpOnly: true,
+    expires: new Date(Date.now() + REFRESH_TOKEN_LIFETIME),
+  });
+};
+
+export const refreshUserSessionController = async (req, res) => {
+  const session = await refreshUsersSession({
+    sessionId: req.cookies.sessionId,
+    refreshToken: req.cookies.refreshToken,
+  });
+
+  setupSession(res, session);
+
+  res.json({
+    status: 200,
+    message: 'Successfully refreshed a session!',
+    data: {
+      accessToken: session.accessToken,
+    },
   });
 };
