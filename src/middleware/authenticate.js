@@ -37,7 +37,7 @@ export const authenticate = async (req, res, next) => {
     new Date() > new Date(session.accessTokenValidUntil);
 
   if (isAccessTokenExpired) {
-    next(createHttpError(401, 'Access token expired'));
+    return next(createHttpError(401, 'Access token expired'));
   }
 
   // Пошук користувача
@@ -48,7 +48,8 @@ export const authenticate = async (req, res, next) => {
     return next(createHttpError(401, 'User not found'));
   }
 
-  // Якщо всі перевірки успішні, функція додає об'єкт користувача до запиту
+  // Якщо всі перевірки успішні, функція додає до req.user об'єкт користувача який робить запит.
+  //  Інформацію про користувача потім доступна в контролерах і мідлварах. Наприклад userId
   req.user = user;
 
   next();
