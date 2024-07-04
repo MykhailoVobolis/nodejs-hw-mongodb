@@ -41,6 +41,7 @@ const contactsSchema = new Schema(
       enum: typeList,
       default: 'personal',
     },
+    userId: { type: Schema.Types.ObjectId, ref: 'users' },
   },
   {
     versionKey: false, // Виключення додавання версії оновлення об'єкту

@@ -1,8 +1,9 @@
 import express from 'express';
 import pino from 'pino-http';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
-import contactsRouter from './routers/contacts.js';
+import router from './routers/index.js';
 
 import { env } from './utils/env.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
@@ -22,6 +23,9 @@ export const setupServer = () => {
   // Middleware CORS що дозволяє робити кросбраузерні запити
   app.use(cors());
 
+  // Middleware cookie-parser для роботи із куками
+  app.use(cookieParser());
+
   // Middleware для логування, такий як pino-http, слід розташовувати якомога раніше у ланцюгу middleware
   app.use(
     pino({
@@ -31,7 +35,7 @@ export const setupServer = () => {
     }),
   );
 
-  app.use(contactsRouter);
+  app.use(router);
 
   // Middleware для обробки випадку, коли клієнт звертається до неіснуючого маршруту
   // додається завжди в кінці, після всіх інших middleware та маршрутів
