@@ -71,6 +71,7 @@ export const loginUser = async (payload) => {
 
 // Сервіс-функція logout користувача
 export const logoutUser = async (sessionId) => {
+  // Видалення поточної сессії користувача
   await SessionsCollection.deleteOne({ _id: sessionId });
 };
 
@@ -156,11 +157,44 @@ export const requestResetToken = async (email) => {
       subject: 'Reset your password',
       html,
     });
-  } catch (error) {
+  } catch (err) {
     throw createHttpError(
       500,
       'Failed to send the email, please try again later.',
-      error,
+      err,
     );
   }
+};
+
+// Сервіс-функція для зміни паролю
+export const resetPassword = async (payload) => {
+  let entries;
+
+  try {
+    entries = jwt.verify(payload.token, env('JWT_SECRET'));
+  } catch (err) {
+    if (err instanceof Error)
+      throw createHttpError(401, 'Token is expired or invalid.');
+    throw err;
+  }
+
+  const user = await UsersCollection.findOne({
+    email: entries.email,
+    _id: entries.sub,
+  });
+
+  if (!user) {
+    throw createHttpError(404, 'User not found');
+  }
+
+  const encryptedPassword = await bcrypt.hash(payload.password, 10);
+
+  // Оновлення паролю користувача
+  await UsersCollection.updateOne(
+    { _id: user._id },
+    { password: encryptedPassword },
+  );
+
+  // Видалення поточної сесії користувача при зміні паролю
+  await SessionsCollection.deleteOne({ userId: user._id });
 };
