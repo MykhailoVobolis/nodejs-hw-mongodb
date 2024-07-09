@@ -3,6 +3,7 @@ import {
   loginUser,
   registerUser,
   refreshUsersSession,
+  requestResetToken,
 } from '../services/auth.js';
 import {
   ACCESS_TOKEN_LIFETIME,
@@ -87,5 +88,14 @@ export const refreshUserSessionController = async (req, res) => {
     data: {
       accessToken: session.accessToken,
     },
+  });
+};
+
+export const requestResetEmailController = async (req, res) => {
+  await requestResetToken(req.body.email);
+  res.json({
+    message: 'Reset password email has been successfully sent.',
+    status: 200,
+    data: {},
   });
 };
