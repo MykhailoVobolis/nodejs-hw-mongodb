@@ -32,8 +32,8 @@ router.get('/:contactId', isValidId, ctrlWrapper(getContactByIdController));
 // Додавання контакта
 router.post(
   '/',
-  validateBody(createContactSchema),
   upload.single('photo'),
+  validateBody(createContactSchema),
   ctrlWrapper(createContactController),
 );
 
@@ -41,8 +41,8 @@ router.post(
 router.patch(
   '/:contactId',
   isValidId,
-  validateBody(updateContactSchema),
   upload.single('photo'),
+  validateBody(updateContactSchema),
   ctrlWrapper(patchContactController),
 );
 
