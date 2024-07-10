@@ -1,12 +1,19 @@
 import { Router } from 'express';
 
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
-import { loginUserSchema, registerUserSchema } from '../validation/auth.js';
+import {
+  loginUserSchema,
+  registerUserSchema,
+  requestResetEmailSchema,
+  resetPasswordSchema,
+} from '../validation/auth.js';
 import {
   loginUserController,
   logoutUserController,
   refreshUserSessionController,
   registerUserController,
+  requestResetEmailController,
+  resetPasswordController,
 } from '../controllers/auth.js';
 import { validateBody } from '../middleware/validateBody.js';
 
@@ -31,5 +38,19 @@ router.post('/logout', ctrlWrapper(logoutUserController));
 
 // Роутер для refresh користувача
 router.post('/refresh', ctrlWrapper(refreshUserSessionController));
+
+// Роут для звпиту скидання паролю через емейл
+router.post(
+  '/send-reset-email',
+  validateBody(requestResetEmailSchema),
+  ctrlWrapper(requestResetEmailController),
+);
+
+// Роут для скидання/зміну паролю
+router.post(
+  '/reset-pwd',
+  validateBody(resetPasswordSchema),
+  ctrlWrapper(resetPasswordController),
+);
 
 export default router;

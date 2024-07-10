@@ -42,6 +42,7 @@ const contactsSchema = new Schema(
       default: 'personal',
     },
     userId: { type: Schema.Types.ObjectId, ref: 'users' },
+    photo: { type: String, required: false },
   },
   {
     versionKey: false, // Виключення додавання версії оновлення об'єкту
