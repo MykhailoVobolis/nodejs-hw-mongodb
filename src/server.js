@@ -8,6 +8,7 @@ import router from './routers/index.js';
 import { env } from './utils/env.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import { swaggerDocs } from './middleware/swaggerDocs.js';
 
 // Читаємо змінну оточення PORT
 const PORT = Number(env('PORT', '3000'));
@@ -25,6 +26,9 @@ export const setupServer = () => {
 
   // Middleware cookie-parser для роботи із куками
   app.use(cookieParser());
+
+  // Middleware Swagger
+  app.use('/api-docs', swaggerDocs());
 
   // Middleware для логування, такий як pino-http, слід розташовувати якомога раніше у ланцюгу middleware
   app.use(
