@@ -5,11 +5,13 @@ import {
   refreshUsersSession,
   requestResetToken,
   resetPassword,
+  loginOrSignupWithGoogle,
 } from '../services/auth.js';
 import {
   ACCESS_TOKEN_LIFETIME,
   REFRESH_TOKEN_LIFETIME,
 } from '../constants/index.js';
+import { generateAuthUrl } from '../utils/googleOAuth2.js';
 
 // Контролер реєстрації користувача
 export const registerUserController = async (req, res) => {
@@ -109,5 +111,31 @@ export const resetPasswordController = async (req, res) => {
     message: 'Password has been successfully reset.',
     status: 200,
     data: {},
+  });
+};
+
+// Контроллер який буде обробляти створення посилання за яким буде відбуватися Google аутентифікація
+export const getGoogleOAuthUrlController = async (req, res) => {
+  const url = generateAuthUrl();
+  res.json({
+    status: 200,
+    message: 'Successfully get Google OAuth url!',
+    data: {
+      url,
+    },
+  });
+};
+
+// Контроллер який буде робити Google аутентифікацію
+export const loginWithGoogleController = async (req, res) => {
+  const session = await loginOrSignupWithGoogle(req.body.code);
+  setupSession(res, session);
+
+  res.json({
+    status: 200,
+    message: 'Successfully logged in via Google OAuth!',
+    data: {
+      accessToken: session.accessToken,
+    },
   });
 };
